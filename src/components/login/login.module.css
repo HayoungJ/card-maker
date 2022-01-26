@@ -1,0 +1,122 @@
+@value makerLightGrey, makerWhite, makerGreen from 'common/colors.css';
+
+.wrap {
+  width: 100%;
+  height: 100vh;
+  background-color: makerLightGrey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  width: 600px;
+  background-color: makerWhite;
+}
+
+.header {
+  background-color: makerGreen;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding: 10px 0;
+  color: makerWhite;
+}
+
+.logo {
+  width: 50px;
+  margin-bottom: 10px;
+}
+
+.project-title {
+  margin: 0;
+}
+
+.login {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.input {
+  width: 300px;
+  height: 30px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  border: 1px solid makerGreen;
+  border-radius: 4px;
+}
+
+.input::placeholder {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.input:focus,
+.input:active {
+  outline: none;
+}
+
+.login-button {
+  width: 100px;
+  height: 30px;
+  box-sizing: content-box;
+  margin-top: 5px;
+  padding: 2px 10px;
+  background-color: makerGreen;
+  border: 2px solid makerGreen;
+  border-radius: 4px;
+  color: makerWhite;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sns-wrap {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.sns-text {
+  margin: 0 0 20px 0;
+  font-weight: bold;
+}
+
+.sns-button {
+  margin-right: 10px;
+  width: 100px;
+  height: 30px;
+  background-color: makerLightGrey;
+  border: none;
+  border-radius: 4px;
+}
+
+.sns-button:last-child {
+  margin-right: 0;
+}
+
+.footer {
+  background-color: makerGreen;
+  color: makerWhite;
+  padding: 15px 0;
+}
+
+.desc {
+  margin: 0;
+  text-align: center;
+}
