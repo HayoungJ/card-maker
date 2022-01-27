@@ -1,7 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './login.module.css';
 
 const Login = (props) => {
+  const navigate = useNavigate();
+
+  const linkTo = (route = '') => {
+    navigate(`/${route}`);
+  };
+
   return (
     <div className={styles.wrap}>
       <section className={styles.modal}>
@@ -12,13 +19,19 @@ const Login = (props) => {
         <section className={styles.login}>
           <h1 className={styles.title}>Login</h1>
           <form className={styles.form}>
-            <input className={styles.input} type="text" placeholder="id" />
+            <input className={styles.input} type="text" placeholder="email" />
             <input
               className={styles.input}
               type="password"
               placeholder="password"
             />
             <button className={styles['login-button']}>Login</button>
+            <button
+              className={styles['register-button']}
+              onClick={() => linkTo('register')}
+            >
+              New user? Register Here
+            </button>
           </form>
           <div className={styles['sns-wrap']}>
             <p className={styles['sns-text']}>OR</p>
