@@ -1,4 +1,4 @@
-@value makerLightGrey, makerWhite, makerGreen from 'common/colors.css';
+@value makerLightGrey, makerWhite, makerGreen, makerPink from 'common/colors.css';
 
 .wrap {
   width: 100%;
@@ -67,7 +67,7 @@
 
 .input:focus,
 .input:active {
-  outline: none;
+  outline: 3px solid makerPink;
 }
 
 .login-button {
@@ -86,10 +86,31 @@
   cursor: pointer;
 }
 
+.login-button:hover {
+  outline: 3px solid makerPink;
+}
+
+.register-button {
+  margin-top: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: makerGreen;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+
+.register-button:hover {
+  text-decoration: underline;
+}
+
 .sns-wrap {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  margin-bottom: 5px;
 }
 
 .sns-text {
@@ -104,10 +125,15 @@
   background-color: makerLightGrey;
   border: none;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .sns-button:last-child {
   margin-right: 0;
+}
+
+.sns-button:hover {
+  outline: 3px solid makerPink;
 }
 
 .footer {
