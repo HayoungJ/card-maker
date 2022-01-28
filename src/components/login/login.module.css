@@ -1,4 +1,4 @@
-@value makerLightGrey, makerWhite, makerGreen, makerPink from 'common/colors.css';
+@value makerLightGrey, makerWhite, makerGreen, makerPink, makerRed from 'common/colors.css';
 
 .wrap {
   width: 100%;
@@ -48,7 +48,7 @@
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  margin: 20px 0;
+  margin: 20px 0 10px;
 }
 
 .input {
@@ -60,6 +60,10 @@
   border-radius: 4px;
 }
 
+.input.error {
+  border: 1px solid makerRed;
+}
+
 .input::placeholder {
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -68,6 +72,18 @@
 .input:focus,
 .input:active {
   outline: 3px solid makerPink;
+}
+
+.error-message {
+  display: none;
+  margin: 5px 0 10px;
+  color: makerRed;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.error-message.show {
+  display: block;
 }
 
 .login-button {
@@ -91,7 +107,7 @@
 }
 
 .register-button {
-  margin-top: 10px;
+  margin-bottom: 15px;
   background-color: transparent;
   border: none;
   outline: none;
