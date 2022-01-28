@@ -1,0 +1,30 @@
+@value makerGreen, makerWhite from 'common/colors.css';
+
+.toast {
+  display: none;
+  width: 400px;
+  padding: 10px 20px;
+  position: fixed;
+  top: 40px;
+  left: calc(50% - 200px);
+  color: makerWhite;
+  font-weight: bold;
+  text-align: center;
+  background-color: makerGreen;
+  border-radius: 40px;
+  opacity: 0.9;
+  transition: toast 0.3s linear;
+}
+
+.toast.show {
+  display: block;
+}
+
+@keyframes toast {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
