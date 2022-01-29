@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from './toast.module.css';
+import styles from './Toast.module.css';
 
 const Toast = ({ message, time }) => {
   const [show, setShow] = useState(false);

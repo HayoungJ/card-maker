@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from './register.module.css';
+import styles from './Register.module.css';
 import app from 'service/firebase';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import Toast from 'components/toast/Toast';
