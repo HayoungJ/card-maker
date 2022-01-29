@@ -5,7 +5,7 @@ import Login from 'components/login/Login';
 import CardDashboard from 'components/card/CardDashboard';
 import Register from 'components/register/Register';
 
-function App() {
+const App = () => {
   return (
     <BrowserRouter>
       <Routes>
@@ -15,6 +15,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
