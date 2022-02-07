@@ -46,37 +46,23 @@
   outline: 1px solid makerLightGrey;
 }
 
-.maker {
+.main {
   width: 100%;
-  min-height: 50px;
-  border: 1px solid red;
-  position: relative;
-  padding: 15px;
   box-sizing: border-box;
 }
 
-.open {
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background-color: transparent;
-  border: none;
-  border-radius: 15px;
-  outline: none;
-  cursor: pointer;
-  color: makerGreen;
+.card-list {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0 50px;
 }
 
-.open:hover {
-  background-color: makerGreen;
-  color: makerWhite;
-}
-
-.section-title {
-  height: 50px;
-  margin: 0;
-  line-height: 50px;
-  color: makerGreen;
+.card-list > li {
+  width: calc(100% / 3);
+  height: 300px;
+  box-sizing: border-box;
+  padding: 30px;
+  list-style: none;
 }

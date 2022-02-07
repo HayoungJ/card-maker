@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import styles from './CardDashboard.module.css';
 import app from 'service/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import CardList from './card_list/CardList';
 import CardMaker from './card_maker/CardMaker';
+import Card from './card/Card';
 
 const CardDashboard = (props) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [cardsInfo, setCardsInfo] = useState([]);
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -20,8 +20,19 @@ const CardDashboard = (props) => {
     });
   }, []);
 
-  const openMaker = () => {
-    setIsOpen(!isOpen);
+  const addNewCard = () => {
+    const newCard = {
+      color: setRandomStyle(),
+    };
+    const newList = [newCard, ...cardsInfo];
+    setCardsInfo(newList);
+  };
+
+  const setRandomStyle = () => {
+    const style = ['pink', 'black', 'colorful'];
+    const index = Math.floor(Math.random() * 3);
+
+    return style[index];
   };
 
   return (
@@ -33,21 +44,13 @@ const CardDashboard = (props) => {
         </div>
         <button className={styles.logout}>logout</button>
       </header>
-      <section className={styles.maker}>
-        {isOpen ? (
-          <button className={styles.open} onClick={openMaker}>
-            <i class="fas fa-chevron-up"></i>
-          </button>
-        ) : (
-          <button className={styles.open} onClick={openMaker}>
-            <i class="fas fa-chevron-down"></i>
-          </button>
-        )}
-        <h2 className={styles['section-title']}>Card Maker</h2>
-        {isOpen ? <CardMaker /> : <></>}
-      </section>
-      <section className={styles.list}>
-        <CardList />
+      <section className={styles.main}>
+        <ul className={styles['card-list']}>
+          <CardMaker handleClick={addNewCard} />
+          {cardsInfo.map((el, index) => (
+            <Card key={index} colorStyle={el.color} />
+          ))}
+        </ul>
       </section>
     </>
   );
