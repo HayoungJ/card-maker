@@ -1,53 +1,13 @@
-@value makerGreen from 'common/colors.css';
+@value makerLightGrey, makerBlack from 'common/colors.css';
 
-.wrap {
+.add {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 10px 0;
-}
-
-.form {
-  width: 800px;
-}
-
-.table {
-  width: 100%;
-  border: 1px solid makerGreen;
-  border-collapse: collapse;
-}
-
-.table-td {
-  border: 1px solid makerGreen;
-  padding: 7px 10px;
-}
-
-.input {
-  width: 100%;
-  box-sizing: border-box;
+  height: 100%;
+  cursor: pointer;
   border: none;
+  border-radius: 20px;
   outline: none;
-}
-
-.select {
-  width: 100%;
-  box-sizing: border-box;
-  border: none;
-  outline: none;
-}
-
-.select:invalid {
-  color: grey;
-}
-
-.row-3 {
-  width: calc(100% / 3);
-}
-
-.row-2 {
-  width: calc(100% / 2);
-}
-
-.row-1 {
-  width: 100%;
+  font-size: 30px;
+  color: makerBlack;
+  background-color: makerLightGrey;
 }
