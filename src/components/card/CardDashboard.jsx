@@ -1,31 +1,90 @@
 import React, { useEffect, useState } from 'react';
 import styles from './CardDashboard.module.css';
-import app from 'service/firebase';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import CardMaker from './card_maker/CardMaker';
 import Card from './card/Card';
 
+import app from 'service/firebase';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  push,
+  child,
+  update,
+} from 'firebase/database';
+
 const CardDashboard = (props) => {
-  const [cardsInfo, setCardsInfo] = useState([]);
+  const navigate = useNavigate();
+
+  const [cardsInfo, setCardsInfo] = useState({});
+  const [user, setUser] = useState('');
+  const [uid, setUid] = useState('');
 
   useEffect(() => {
     const auth = getAuth(app);
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log('singed in ' + user.email);
+        setUid(user.uid);
       } else {
-        // User is signed out
-        // ...
+        navigate(`/`);
       }
     });
   }, []);
 
+  useEffect(() => {
+    console.log(uid);
+    const dbRef = ref(getDatabase(app));
+    get(child(dbRef, `users/${uid}/posts`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setCardsInfo(snapshot.val());
+        } else {
+          console.log('No data available');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [uid]);
+
+  const handleInput = (event, key) => {
+    const database = getDatabase(app);
+    const type = event.target.id;
+    const value = event.target.value;
+    const postData = cardsInfo[key];
+    postData[type] = value;
+
+    const updates = {};
+    updates[`users/${uid}/posts/${key}`] = postData;
+
+    return update(ref(database), updates);
+  };
+
   const addNewCard = () => {
-    const newCard = {
-      color: setRandomStyle(),
+    const database = getDatabase(app);
+    const postData = {
+      key: '',
+      profile: '',
+      name: '',
+      company: '',
+      email: '',
+      phoneNumber: '',
+      description: '',
+      style: setRandomStyle(),
     };
-    const newList = [newCard, ...cardsInfo];
-    setCardsInfo(newList);
+    const newPostKey = push(child(ref(database), 'posts')).key;
+    postData['key'] = newPostKey;
+
+    const newCardsInfo = [postData, ...cardsInfo];
+    setCardsInfo(newCardsInfo);
+
+    const updates = {};
+    updates[`users/${uid}/posts/${newPostKey}`] = postData;
+
+    return update(ref(database), updates);
   };
 
   const setRandomStyle = () => {
@@ -47,8 +106,8 @@ const CardDashboard = (props) => {
       <section className={styles.main}>
         <ul className={styles['card-list']}>
           <CardMaker handleClick={addNewCard} />
-          {cardsInfo.map((el, index) => (
-            <Card key={index} colorStyle={el.color} />
+          {Object.values(cardsInfo).map((el) => (
+            <Card key={el.key} cardInfo={el} handleInput={handleInput} />
           ))}
         </ul>
       </section>
