@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Register.module.css';
+import Toast from 'components/toast/Toast';
+
 import app from 'service/firebase';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import Toast from 'components/toast/Toast';
+import { getDatabase, ref, set } from 'firebase/database';
 
 const Register = (props) => {
   const navigate = useNavigate();
@@ -24,9 +26,14 @@ const Register = (props) => {
     const auth = getAuth(app);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
-        // const user = userCredential.user;
-        // ...
+        const user = userCredential.user;
+
+        const db = getDatabase(app);
+        set(ref(db, 'users/' + user.uid), {
+          email: user.email,
+          uid: user.uid,
+        });
+
         setToast(true);
         setTimeout(() => {
           linkTo();
