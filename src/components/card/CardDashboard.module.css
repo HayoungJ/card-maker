@@ -61,6 +61,7 @@
 
 .card-list > li {
   width: calc(100% / 3);
+  min-width: 360px;
   height: 300px;
   box-sizing: border-box;
   padding: 30px;
