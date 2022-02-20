@@ -1,70 +1,72 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './Card.module.css';
 
-const Card = ({
-  cardInfo: {
-    profile,
-    name,
-    company,
-    email,
-    phoneNumber,
-    description,
-    style,
-    key,
-  },
-  handleInput,
-}) => {
+const Card = ({ uid, card, handleInput, updateImage }) => {
   const imageRef = useRef();
 
   const [image, setImage] = useState('');
-  const [url, setUrl] = useState('');
+  const [data, setData] = useState({});
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setData({ ...card });
+  }, [card]);
 
   const uploadImage = () => {
-    const data = new FormData();
-    data.append('file', image);
-    data.append('upload_preset', 'mfcsvroh');
-    data.append('cloud_name', 'dr5sekusv');
+    const imageData = new FormData();
+    imageData.append('file', image);
+    imageData.append('upload_preset', 'mfcsvroh');
+    imageData.append('cloud_name', 'dr5sekusv');
 
     fetch(' https://api.cloudinary.com/v1_1/dr5sekusv/image/upload', {
       method: 'post',
-      body: data,
+      body: imageData,
     })
       .then((resp) => resp.json())
-      .then((data) => {
-        setUrl(data.url);
+      .then((result) => {
+        return updateImage(result.url, data.key);
       })
       .catch((err) => console.log(err));
+  };
+
+  const handleChange = (event) => {
+    if (event.target.value) {
+      const newData = { ...data };
+      newData[event.target.id] = event.target.value;
+      setData(newData);
+    }
   };
 
   return (
     <li className={styles.card}>
       <form
-        className={`${styles.form} ${styles[`${style}`]}`}
+        className={`${styles.form} ${styles[`${data.style}`]}`}
         onInput={(event) => {
-          handleInput(event, key);
+          event.target.id !== 'profile' && handleInput(event, data.key);
         }}
       >
         <div className={styles['image-wrap']}>
           <img
             className={styles.image}
-            src={url || 'https://via.placeholder.com/100'}
+            src={data.profile || 'https://via.placeholder.com/100'}
             alt="profile"
           />
           <input
             ref={imageRef}
+            id="profile"
             className={styles['image-input']}
             type="file"
             accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={(event) => {
+              event.preventDefault();
+              setImage(event.target.files[0]);
+              uploadImage();
+            }}
           />
           <button
             className={styles['image-button']}
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={async (event) => {
+              event.preventDefault();
               imageRef.current.click();
-              uploadImage();
             }}
           >
             Add Image
@@ -76,35 +78,40 @@ const Card = ({
             className={styles.input}
             type="text"
             placeholder="Name"
-            defaultValue={name}
+            value={data.name || ''}
+            onChange={handleChange}
           ></input>
           <input
             id="company"
             className={styles.input}
             type="text"
             placeholder="Company"
-            defaultValue={company}
+            value={data.company || ''}
+            onChange={handleChange}
           ></input>
           <input
             id="email"
             className={styles.input}
             type="text"
             placeholder="Email"
-            defaultValue={email}
+            value={data.email || ''}
+            onChange={handleChange}
           ></input>
           <input
             id="phoneNumber"
             className={styles.input}
             type="text"
             placeholder="Phone Number"
-            defaultValue={phoneNumber}
+            value={data.phoneNumber || ''}
+            onChange={handleChange}
           ></input>
           <textarea
             id="description"
             className={styles.textarea}
             placeholder="Description"
             row="3"
-            defaultValue={description}
+            value={data.description || ''}
+            onChange={handleChange}
           ></textarea>
         </div>
       </form>
