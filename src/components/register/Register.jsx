@@ -2,12 +2,9 @@ import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Register.module.css';
 import Toast from 'components/toast/Toast';
+import { register } from 'service/auth';
 
-import app from 'service/firebase';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getDatabase, ref, set } from 'firebase/database';
-
-const Register = (props) => {
+const Register = () => {
   const navigate = useNavigate();
 
   const emailRef = useRef();
@@ -22,45 +19,33 @@ const Register = (props) => {
     navigate(`/${route}`);
   };
 
-  const createUser = (email, password) => {
-    const auth = getAuth(app);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-
-        const db = getDatabase(app);
-        set(ref(db, 'users/' + user.uid), {
-          email: user.email,
-          uid: user.uid,
-        });
-
-        setToast(true);
-        setTimeout(() => {
-          linkTo();
-        }, 1000);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        switch (errorCode) {
-          case 'auth/invalid-email':
-            setEmailError(true);
-            errorRef.current.innerText = '유효하지 않은 이메일 주소입니다.';
-            break;
-          case 'auth/email-already-in-use':
-            setEmailError(true);
-            errorRef.current.innerText = '중복 이메일 주소입니다.';
-            break;
-          case 'auth/weak-password':
-            setPasswordError(true);
-            errorRef.current.innerText = '비밀번호는 6자 이상이여야 합니다.';
-            break;
-          default:
-            console.log(errorCode);
-        }
-      });
+  const handleRegisterSuccess = () => {
+    setToast(true);
+    setTimeout(() => {
+      linkTo();
+    }, 1000);
   };
 
-  const handleRegister = (event) => {
+  const handleRegisterError = (code) => {
+    switch (code) {
+      case 'auth/invalid-email':
+        setEmailError(true);
+        errorRef.current.innerText = '유효하지 않은 이메일 주소입니다.';
+        break;
+      case 'auth/email-already-in-use':
+        setEmailError(true);
+        errorRef.current.innerText = '중복 이메일 주소입니다.';
+        break;
+      case 'auth/weak-password':
+        setPasswordError(true);
+        errorRef.current.innerText = '비밀번호는 6자 이상이여야 합니다.';
+        break;
+      default:
+        console.log(code);
+    }
+  };
+
+  const onSubmit = (event) => {
     event.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
@@ -69,7 +54,8 @@ const Register = (props) => {
 
     setEmailError(false);
     setPasswordError(false);
-    createUser(emailRef.current.value, passwordRef.current.value);
+
+    register(email, password, handleRegisterSuccess, handleRegisterError);
   };
 
   return (
@@ -81,7 +67,7 @@ const Register = (props) => {
         </section>
         <section className={styles.register}>
           <h1 className={styles.title}>Register</h1>
-          <form className={styles.form} onSubmit={handleRegister}>
+          <form className={styles.form} onSubmit={onSubmit}>
             <input
               ref={emailRef}
               className={`${styles.input} ${emailError ? styles.error : ''}`}

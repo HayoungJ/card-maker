@@ -1,45 +1,46 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
-import app from 'service/firebase';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getUser, login } from 'service/auth';
 
-const Login = (props) => {
+const Login = () => {
   const navigate = useNavigate();
 
   const emailRef = useRef();
   const passwordRef = useRef();
   const errorRef = useRef();
 
+  const [user, setUser] = useState(null);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
-  const linkTo = (route = '') => {
-    navigate(`/${route}`);
+  useEffect(() => {
+    getUser((user) => {
+      setUser(user);
+    });
+  });
+
+  useEffect(() => {
+    user && navigate('/dashboard');
+  }, [user, navigate]);
+
+  const handleLoginSuccess = (user) => {
+    setUser(user);
   };
 
-  const checkAccount = (email, password) => {
-    const auth = getAuth(app);
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        linkTo('dashboard');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        switch (errorCode) {
-          case 'auth/user-not-found':
-            setEmailError(true);
-            errorRef.current.innerText = '존재하지 않는 계정입니다.';
-            break;
-          case 'auth/wrong-password':
-            setPasswordError(true);
-            errorRef.current.innerText = '틀린 비밀번호 입니다.';
-            break;
-          default:
-            console.log(errorCode);
-        }
-      });
+  const handleLoginError = (code) => {
+    switch (code) {
+      case 'auth/user-not-found':
+        setEmailError(true);
+        errorRef.current.innerText = '존재하지 않는 계정입니다.';
+        break;
+      case 'auth/wrong-password':
+        setPasswordError(true);
+        errorRef.current.innerText = '틀린 비밀번호 입니다.';
+        break;
+      default:
+        console.log(code);
+    }
   };
 
   const handleLogin = (event) => {
@@ -51,7 +52,7 @@ const Login = (props) => {
 
     setEmailError(false);
     setPasswordError(false);
-    checkAccount(email, password);
+    login(email, password, handleLoginSuccess, handleLoginError);
   };
 
   return (
@@ -86,7 +87,7 @@ const Login = (props) => {
           </form>
           <button
             className={styles['register-button']}
-            onClick={() => linkTo('register')}
+            onClick={() => navigate('/register')}
           >
             New user? Register Here
           </button>
