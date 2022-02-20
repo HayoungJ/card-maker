@@ -4,69 +4,52 @@ import { useNavigate } from 'react-router-dom';
 import CardMaker from './card_maker/CardMaker';
 import Card from './card/Card';
 
-import app from 'service/firebase';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import {
-  getDatabase,
-  ref,
-  set,
-  get,
-  push,
-  child,
-  update,
-} from 'firebase/database';
+import { getUser } from 'service/auth';
+import { getCardData, updateCardData } from 'service/database';
+import useLocalStorage from 'hooks/useLocalStorage';
 
 const CardDashboard = (props) => {
   const navigate = useNavigate();
 
-  const [cardsInfo, setCardsInfo] = useState({});
-  const [user, setUser] = useState('');
-  const [uid, setUid] = useState('');
+  const [cards, setCards] = useLocalStorage('cards', null);
+  const [uid, setUid] = useState(null);
 
   useEffect(() => {
-    const auth = getAuth(app);
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
+    getUser(
+      (user) => {
         setUid(user.uid);
-      } else {
-        navigate(`/`);
+      },
+      () => {
+        navigate('/');
       }
-    });
-  }, []);
+    );
+  }, [navigate]);
 
   useEffect(() => {
-    console.log(uid);
-    const dbRef = ref(getDatabase(app));
-    get(child(dbRef, `users/${uid}/posts`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          setCardsInfo(snapshot.val());
-        } else {
-          console.log('No data available');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [uid]);
+    const fetchData = async () => {
+      const data = await getCardData(uid);
+      setCards(data);
+    };
 
-  const handleInput = (event, key) => {
-    const database = getDatabase(app);
+    fetchData();
+  }, [uid, setCards]);
+
+  const handleInput = async (event, key) => {
     const type = event.target.id;
     const value = event.target.value;
-    const postData = cardsInfo[key];
-    postData[type] = value;
 
-    const updates = {};
-    updates[`users/${uid}/posts/${key}`] = postData;
+    const updateCard = { ...cards[key] };
+    updateCard[type] = value;
 
-    return update(ref(database), updates);
+    const data = await updateCardData(uid, updateCard);
+    const newCards = { ...cards };
+    newCards[key] = data;
+    setCards(newCards);
   };
 
-  const addNewCard = () => {
-    const database = getDatabase(app);
+  const addNewCard = async () => {
     const postData = {
-      key: '',
+      key: null,
       profile: '',
       name: '',
       company: '',
@@ -75,16 +58,20 @@ const CardDashboard = (props) => {
       description: '',
       style: setRandomStyle(),
     };
-    const newPostKey = push(child(ref(database), 'posts')).key;
-    postData['key'] = newPostKey;
 
-    const newCardsInfo = [postData, ...cardsInfo];
-    setCardsInfo(newCardsInfo);
+    const data = await updateCardData(uid, postData);
+    const newCards = { data, ...cards };
+    setCards(newCards);
+  };
 
-    const updates = {};
-    updates[`users/${uid}/posts/${newPostKey}`] = postData;
+  const updateImage = async (url, key) => {
+    const updateCard = { ...cards[key] };
+    if (url) updateCard['profile'] = url;
 
-    return update(ref(database), updates);
+    const data = await updateCardData(uid, updateCard);
+    const newCards = { ...cards };
+    newCards[key] = data;
+    setCards(newCards);
   };
 
   const setRandomStyle = () => {
@@ -106,9 +93,16 @@ const CardDashboard = (props) => {
       <section className={styles.main}>
         <ul className={styles['card-list']}>
           <CardMaker handleClick={addNewCard} />
-          {Object.values(cardsInfo).map((el) => (
-            <Card key={el.key} cardInfo={el} handleInput={handleInput} />
-          ))}
+          {cards &&
+            Object.values(cards).map((el) => (
+              <Card
+                key={el.key}
+                uid={uid}
+                card={el}
+                handleInput={handleInput}
+                updateImage={updateImage}
+              />
+            ))}
         </ul>
       </section>
     </>
