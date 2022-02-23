@@ -1,37 +1,31 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-const useLocalStorage = (stateKey, defaultValue) => {
-  const [state, setState] = useState(defaultValue);
-  const isNewSession = useRef(true);
+function useLocalStorage(stateKey, initialState) {
+  const [state, setState] = useState(
+    () => JSON.parse(window.localStorage.getItem(stateKey)) || initialState
+  );
 
+  // sync state change and localstorage change
+  // this is because state change does not occurs across tabs
   useEffect(() => {
-    if (isNewSession.current) {
-      const currentState = localStorage.getItem(stateKey);
-      if (currentState) {
-        setState(JSON.parse(currentState));
-      } else {
-        setState(defaultValue);
-      }
-      isNewSession.current = false;
-      return;
-    }
-    try {
-      localStorage.setItem(stateKey, JSON.stringify(state));
-    } catch (error) {}
-  }, [state, stateKey, defaultValue]);
+    window.localStorage.setItem(stateKey, JSON.stringify(state));
+  }, [stateKey, state]);
 
+  // sync localstorage change and state change
+  // this is because localstorage change does not occurs re-render
   useEffect(() => {
-    const onReceieveMessage = (event) => {
+    const onUpdateStorage = (event) => {
       const { key, newValue } = event;
       if (key === stateKey) {
-        console.log(newValue);
         newValue && setState(JSON.parse(newValue));
       }
     };
-    window.addEventListener('storage', onReceieveMessage);
-    return () => window.removeEventListener('storage', onReceieveMessage);
-  }, [stateKey, setState]);
+
+    window.addEventListener('storage', onUpdateStorage);
+    return () => window.removeEventListener('storage', onUpdateStorage);
+  });
+
   return [state, setState];
-};
+}
 
 export default useLocalStorage;
