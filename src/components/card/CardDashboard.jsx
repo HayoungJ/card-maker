@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styles from './CardDashboard.module.css';
 import { useNavigate } from 'react-router-dom';
-import CardMaker from './card_maker/CardMaker';
-import Card from './card/Card';
+import { getUser } from 'service/auth';
+import Header from 'components/header/Header';
+import CardList from './card_list/CardList';
 
-import { getUser, logout } from 'service/auth';
-import { deleteCardData, getCardData, updateCardData } from 'service/database';
-import useLocalStorage from 'hooks/useLocalStorage';
-
-const CardDashboard = (props) => {
+const CardDashboard = memo(() => {
   const navigate = useNavigate();
 
-  const [cards, setCards] = useLocalStorage('cards', null);
   const [uid, setUid] = useState(null);
 
+  // check if user data exists
+  // if there is no user data, return to login page
   useEffect(() => {
     getUser(
       (user) => {
@@ -25,93 +23,14 @@ const CardDashboard = (props) => {
     );
   }, [navigate]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getCardData(uid);
-      data && setCards(data);
-    };
-
-    fetchData();
-  }, [uid, setCards]);
-
-  const handleInput = async (type, value, key) => {
-    const updateCard = { ...cards[key] };
-    if (value) updateCard[type] = value;
-    console.log(updateCard);
-
-    const [data] = await updateCardData(uid, updateCard);
-    const newCards = { ...cards };
-    newCards[key] = data;
-    setCards(newCards);
-  };
-
-  const addNewCard = async () => {
-    const postData = {
-      key: null,
-      profile: '',
-      name: '',
-      company: '',
-      email: '',
-      phoneNumber: '',
-      description: '',
-      style: setRandomStyle(),
-    };
-
-    const [data, key] = await updateCardData(uid, postData);
-    const newCards = { [key]: data, ...cards };
-    setCards(newCards);
-  };
-
-  const deleteCard = (key) => {
-    deleteCardData(uid, key);
-    const newCards = { ...cards };
-    delete newCards[key];
-    setCards(newCards);
-  };
-
-  const setRandomStyle = () => {
-    const style = ['pink', 'black', 'colorful'];
-    const index = Math.floor(Math.random() * 3);
-
-    return style[index];
-  };
-
-  const handleLogout = () => {
-    logout(
-      () => {
-        navigate('/');
-      },
-      () => {}
-    );
-  };
-
   return (
     <>
-      <header className={styles.header}>
-        <div className={styles.title}>
-          <img className={styles.logo} src="/images/logo.png" alt="card icon" />
-          <h1 className={styles['project-name']}>Business Card Maker</h1>
-        </div>
-        <button className={styles.logout} onClick={handleLogout}>
-          logout
-        </button>
-      </header>
+      <Header />
       <section className={styles.main}>
-        <ul className={styles['card-list']}>
-          <CardMaker handleClick={addNewCard} />
-          {cards &&
-            Object.values(cards).map((el) => (
-              <Card
-                key={el.key}
-                card={el}
-                handleInput={handleInput}
-                handleDelete={deleteCard}
-              />
-            ))}
-        </ul>
+        <CardList uid={uid} />
       </section>
     </>
   );
-};
+});
 
 export default CardDashboard;
