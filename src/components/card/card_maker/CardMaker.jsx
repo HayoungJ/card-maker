@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styles from './CardMaker.module.css';
 
-const CardMaker = ({ handleClick }) => {
+const CardMaker = memo(({ handleClick }) => {
   const onClick = (event) => {
     event.preventDefault();
     handleClick();
@@ -14,6 +14,6 @@ const CardMaker = ({ handleClick }) => {
       </button>
     </li>
   );
-};
+});
 
 export default CardMaker;
