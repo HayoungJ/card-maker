@@ -1,4 +1,12 @@
-import { child, get, getDatabase, push, ref, update } from 'firebase/database';
+import {
+  child,
+  get,
+  getDatabase,
+  push,
+  ref,
+  remove,
+  update,
+} from 'firebase/database';
 import app from './firebase';
 
 export const setUserData = (uid) => {
@@ -30,9 +38,14 @@ export const updateCardData = (uid, data) => {
 
   return update(ref(db), updates)
     .then(() => {
-      return data;
+      return [data, postKey];
     })
     .catch((error) => {
       console.log(error);
     });
+};
+
+export const deleteCardData = (uid, key) => {
+  const db = getDatabase(app);
+  remove(ref(db, `users/${uid}/posts/${key}`));
 };
