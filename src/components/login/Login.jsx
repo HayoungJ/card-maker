@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
-import { getUser, login } from 'service/auth';
+import { getUser, googleLogin, login } from 'service/auth';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -55,6 +55,19 @@ const Login = () => {
     login(email, password, handleLoginSuccess, handleLoginError);
   };
 
+  const handleSnsLogin = (type) => {
+    switch (type) {
+      case 'google':
+        googleLogin(handleLoginSuccess, handleLoginError);
+        break;
+      case 'github':
+        break;
+      default:
+        console.log('not valide sns login');
+        break;
+    }
+  };
+
   return (
     <div className={styles.wrap}>
       <section className={styles.modal}>
@@ -94,7 +107,12 @@ const Login = () => {
           <div className={styles['sns-wrap']}>
             <p className={styles['sns-text']}>OR</p>
             <div className={styles['sns-buttons']}>
-              <button className={styles['sns-button']}>Google</button>
+              <button
+                className={styles['sns-button']}
+                onClick={() => handleSnsLogin('google')}
+              >
+                Google
+              </button>
               <button className={styles['sns-button']}>Github</button>
             </div>
           </div>

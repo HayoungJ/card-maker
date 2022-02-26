@@ -4,6 +4,8 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
 import { setUserData } from './database';
 import app from './firebase';
@@ -47,12 +49,27 @@ export const logout = (handleSuccess, handleError) => {
     });
 };
 
-export const getUser = (handleSuccess, handleFail = () => {}) => {
+export const googleLogin = (handleSuccess, handleError) => {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential.accessToken;
+      const user = result.user;
+      // setUserData(user);
+      handleSuccess(user);
+    })
+    .catch((error) => {
+      handleError && handleError(error);
+    });
+};
+
+export const getUser = (handleSuccess, handleFail) => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       handleSuccess(user);
     } else {
-      handleFail();
+      handleFail && handleFail();
     }
   });
 };
