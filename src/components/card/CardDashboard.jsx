@@ -1,11 +1,11 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './CardDashboard.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getUser } from 'service/auth';
 import Header from 'components/header/Header';
 import CardList from './card_list/CardList';
 
-const CardDashboard = memo(() => {
+const CardDashboard = () => {
   const navigate = useNavigate();
 
   const [uid, setUid] = useState(null);
@@ -21,7 +21,7 @@ const CardDashboard = memo(() => {
         navigate('/');
       }
     );
-  }, [navigate]);
+  });
 
   return (
     <>
@@ -31,6 +31,6 @@ const CardDashboard = memo(() => {
       </section>
     </>
   );
-});
+};
 
 export default CardDashboard;
