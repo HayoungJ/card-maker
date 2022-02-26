@@ -10,10 +10,9 @@ const CardList = ({ uid }) => {
 
   // fetch user data from firebase
   useEffect(() => {
-    console.log(uid);
     const fetchData = async () => {
-      const data = uid ? await getCardData(uid) : null;
-      data && setCards(data);
+      const data = uid ? await getCardData(uid) : {};
+      data ? setCards(data) : setCards({});
     };
 
     fetchData();
