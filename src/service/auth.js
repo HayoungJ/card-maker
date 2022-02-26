@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  signOut,
 } from 'firebase/auth';
 import { getDatabase, ref, set } from 'firebase/database';
 import app from './firebase';
@@ -38,6 +39,18 @@ export const login = async (email, password, handleSuccess, handleError) => {
     })
     .catch((error) => {
       handleError(error.code);
+    });
+};
+
+export const logout = (handleSuccess, handleError) => {
+  const auth = getAuth(app);
+
+  signOut(auth)
+    .then(() => {
+      handleSuccess();
+    })
+    .catch((error) => {
+      handleError(error);
     });
 };
 
