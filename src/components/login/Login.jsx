@@ -18,7 +18,7 @@ const Login = () => {
     getUser((user) => {
       setUser(user);
     });
-  });
+  }, []);
 
   useEffect(() => {
     user && navigate('/dashboard');
