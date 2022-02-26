@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './Card.module.css';
 
-const Card = ({ uid, card, handleInput, updateImage }) => {
+const Card = ({ card, handleInput, updateImage, handleDelete }) => {
   const imageRef = useRef();
 
   const [image, setImage] = useState('');
@@ -34,6 +34,10 @@ const Card = ({ uid, card, handleInput, updateImage }) => {
       newData[event.target.id] = event.target.value;
       setData(newData);
     }
+  };
+
+  const onDelete = () => {
+    handleDelete(data.key);
   };
 
   return (
@@ -115,6 +119,9 @@ const Card = ({ uid, card, handleInput, updateImage }) => {
           ></textarea>
         </div>
       </form>
+      <button className={styles['delete-button']} onClick={onDelete}>
+        <i className="far fa-times-circle"></i>
+      </button>
     </li>
   );
 };
