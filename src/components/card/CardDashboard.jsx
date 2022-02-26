@@ -28,7 +28,7 @@ const CardDashboard = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getCardData(uid);
-      setCards(data);
+      data && setCards(data);
     };
 
     fetchData();
