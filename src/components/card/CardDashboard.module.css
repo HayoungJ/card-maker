@@ -66,4 +66,5 @@
   box-sizing: border-box;
   padding: 30px;
   list-style: none;
+  position: relative;
 }
