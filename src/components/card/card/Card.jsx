@@ -17,26 +17,30 @@ const Card = ({ card, handleInput, handleDelete }) => {
     imageData.append('cloud_name', 'dr5sekusv');
 
     try {
-      const resp = await fetch(
+      const response = await fetch(
         ' https://api.cloudinary.com/v1_1/dr5sekusv/image/upload',
         {
           method: 'post',
           body: imageData,
         }
       );
-      const result = await resp.json();
+      const result = await response.json();
       return result.url;
-    } catch (err) {
-      return console.log(err);
+    } catch (error) {
+      return console.log(error);
     }
   };
 
-  const handleChange = (event) => {
+  const onChange = (event) => {
     if (event.target.value) {
       const newData = { ...data };
       newData[event.target.id] = event.target.value;
       setData(newData);
     }
+  };
+
+  const onInput = (event) => {
+    handleInput(event.target.id, event.target.value, data.key);
   };
 
   const onDelete = () => {
@@ -45,13 +49,7 @@ const Card = ({ card, handleInput, handleDelete }) => {
 
   return (
     <li className={styles.card}>
-      <form
-        className={`${styles.form} ${styles[`${data.style}`]}`}
-        onInput={(event) => {
-          event.target.id !== 'profile' &&
-            handleInput(event.target.id, event.target.value, data.key);
-        }}
-      >
+      <section className={`${styles['form-wrap']} ${styles[`${data.style}`]}`}>
         <div className={styles['image-wrap']}>
           <img
             className={styles.image}
@@ -82,14 +80,14 @@ const Card = ({ card, handleInput, handleDelete }) => {
             Add Image
           </button>
         </div>
-        <div className={styles['input-wrap']}>
+        <form className={styles['input-wrap']} onInput={onInput}>
           <input
             id="name"
             className={styles.input}
             type="text"
             placeholder="Name"
             value={data.name || ''}
-            onChange={handleChange}
+            onChange={onChange}
           ></input>
           <input
             id="company"
@@ -97,7 +95,7 @@ const Card = ({ card, handleInput, handleDelete }) => {
             type="text"
             placeholder="Company"
             value={data.company || ''}
-            onChange={handleChange}
+            onChange={onChange}
           ></input>
           <input
             id="email"
@@ -105,7 +103,7 @@ const Card = ({ card, handleInput, handleDelete }) => {
             type="text"
             placeholder="Email"
             value={data.email || ''}
-            onChange={handleChange}
+            onChange={onChange}
           ></input>
           <input
             id="phoneNumber"
@@ -113,7 +111,7 @@ const Card = ({ card, handleInput, handleDelete }) => {
             type="text"
             placeholder="Phone Number"
             value={data.phoneNumber || ''}
-            onChange={handleChange}
+            onChange={onChange}
           ></input>
           <textarea
             id="description"
@@ -121,13 +119,13 @@ const Card = ({ card, handleInput, handleDelete }) => {
             placeholder="Description"
             row="3"
             value={data.description || ''}
-            onChange={handleChange}
+            onChange={onChange}
           ></textarea>
-        </div>
-      </form>
-      <button className={styles['delete-button']} onClick={onDelete}>
-        <i className="far fa-times-circle"></i>
-      </button>
+        </form>
+        <button className={styles['delete-button']} onClick={onDelete}>
+          <i className="far fa-times-circle"></i>
+        </button>
+      </section>
     </li>
   );
 };
