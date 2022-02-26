@@ -1,31 +1,34 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './Card.module.css';
 
-const Card = ({ card, handleInput, updateImage, handleDelete }) => {
+const Card = ({ card, handleInput, handleDelete }) => {
   const imageRef = useRef();
 
-  const [image, setImage] = useState('');
   const [data, setData] = useState({});
 
   useEffect(() => {
     setData({ ...card });
   }, [card]);
 
-  const uploadImage = () => {
+  const uploadImage = async (image) => {
     const imageData = new FormData();
     imageData.append('file', image);
     imageData.append('upload_preset', 'mfcsvroh');
     imageData.append('cloud_name', 'dr5sekusv');
 
-    fetch(' https://api.cloudinary.com/v1_1/dr5sekusv/image/upload', {
-      method: 'post',
-      body: imageData,
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        return updateImage(result.url, data.key);
-      })
-      .catch((err) => console.log(err));
+    try {
+      const resp = await fetch(
+        ' https://api.cloudinary.com/v1_1/dr5sekusv/image/upload',
+        {
+          method: 'post',
+          body: imageData,
+        }
+      );
+      const result = await resp.json();
+      return result.url;
+    } catch (err) {
+      return console.log(err);
+    }
   };
 
   const handleChange = (event) => {
@@ -45,7 +48,8 @@ const Card = ({ card, handleInput, updateImage, handleDelete }) => {
       <form
         className={`${styles.form} ${styles[`${data.style}`]}`}
         onInput={(event) => {
-          event.target.id !== 'profile' && handleInput(event, data.key);
+          event.target.id !== 'profile' &&
+            handleInput(event.target.id, event.target.value, data.key);
         }}
       >
         <div className={styles['image-wrap']}>
@@ -60,10 +64,12 @@ const Card = ({ card, handleInput, updateImage, handleDelete }) => {
             className={styles['image-input']}
             type="file"
             accept="image/*"
-            onChange={(event) => {
+            onChange={async (event) => {
               event.preventDefault();
-              setImage(event.target.files[0]);
-              uploadImage();
+              const image = event.target.files[0];
+              const imageUrl = await uploadImage(image);
+              console.log(imageUrl);
+              handleInput('profile', imageUrl, data.key);
             }}
           />
           <button
