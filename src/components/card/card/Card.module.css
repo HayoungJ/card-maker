@@ -1,22 +1,23 @@
 @value makerGreen, makerWhite, makerLightPink, makerBlack, makerColorful from 'common/colors.css';
 
-.form {
+.form-wrap {
   width: 100%;
   height: 100%;
   border-radius: 20px;
   display: flex;
   flex-flow: row nowrap;
+  position: relative;
 }
 
-.form.pink {
+.form-wrap.pink {
   background-color: makerLightPink;
 }
 
-.form.black {
+.form-wrap.black {
   background-color: makerBlack;
 }
 
-.form.colorful {
+.form-wrap.colorful {
   background: makerColorful;
 }
 
@@ -89,8 +90,8 @@
   width: 20px;
   height: 20px;
   position: absolute;
-  top: 40px;
-  right: 40px;
+  top: 10px;
+  right: 10px;
   border: none;
   border-radius: 50%;
   outline: none;
