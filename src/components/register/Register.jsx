@@ -15,14 +15,10 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [toast, setToast] = useState(false);
 
-  const linkTo = (route = '') => {
-    navigate(`/${route}`);
-  };
-
   const handleRegisterSuccess = () => {
     setToast(true);
     setTimeout(() => {
-      linkTo();
+      navigate('/');
     }, 1000);
   };
 
@@ -88,7 +84,10 @@ const Register = () => {
             ></p>
             <button className={styles['register-button']}>Register</button>
           </form>
-          <button className={styles['login-button']} onClick={() => linkTo()}>
+          <button
+            className={styles['login-button']}
+            onClick={() => navigate('/')}
+          >
             Already have an account?
           </button>
         </section>
