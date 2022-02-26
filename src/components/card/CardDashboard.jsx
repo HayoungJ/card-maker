@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import CardMaker from './card_maker/CardMaker';
 import Card from './card/Card';
 
-import { getUser } from 'service/auth';
-import { getCardData, updateCardData } from 'service/database';
+import { getUser, logout } from 'service/auth';
+import { deleteCardData, getCardData, updateCardData } from 'service/database';
 import useLocalStorage from 'hooks/useLocalStorage';
 
 const CardDashboard = (props) => {
@@ -59,8 +59,15 @@ const CardDashboard = (props) => {
       style: setRandomStyle(),
     };
 
-    const data = await updateCardData(uid, postData);
-    const newCards = { data, ...cards };
+    const [data, key] = await updateCardData(uid, postData);
+    const newCards = { [key]: data, ...cards };
+    setCards(newCards);
+  };
+
+  const deleteCard = (key) => {
+    deleteCardData(uid, key);
+    const newCards = { ...cards };
+    delete newCards[key];
     setCards(newCards);
   };
 
@@ -81,6 +88,15 @@ const CardDashboard = (props) => {
     return style[index];
   };
 
+  const handleLogout = () => {
+    logout(
+      () => {
+        navigate('/');
+      },
+      () => {}
+    );
+  };
+
   return (
     <>
       <header className={styles.header}>
@@ -88,7 +104,9 @@ const CardDashboard = (props) => {
           <img className={styles.logo} src="/images/logo.png" alt="card icon" />
           <h1 className={styles['project-name']}>Business Card Maker</h1>
         </div>
-        <button className={styles.logout}>logout</button>
+        <button className={styles.logout} onClick={handleLogout}>
+          logout
+        </button>
       </header>
       <section className={styles.main}>
         <ul className={styles['card-list']}>
@@ -97,10 +115,10 @@ const CardDashboard = (props) => {
             Object.values(cards).map((el) => (
               <Card
                 key={el.key}
-                uid={uid}
                 card={el}
                 handleInput={handleInput}
                 updateImage={updateImage}
+                handleDelete={deleteCard}
               />
             ))}
         </ul>
