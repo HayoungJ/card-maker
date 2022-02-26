@@ -6,16 +6,21 @@ import {
   ref,
   remove,
   update,
+  set,
 } from 'firebase/database';
 import app from './firebase';
 
-export const setUserData = (uid) => {
-  //
+const db = getDatabase(app);
+const dbRef = ref(db);
+
+export const setUserData = (user) => {
+  set(ref(db, 'users/' + user.uid), {
+    email: user.email,
+    uid: user.uid,
+  });
 };
 
-export const getCardData = (uid) => {
-  const dbRef = ref(getDatabase(app));
-
+export const getCardData = async (uid) => {
   return get(child(dbRef, `users/${uid}/posts`))
     .then((snapshot) => {
       if (snapshot.exists()) {
@@ -23,20 +28,18 @@ export const getCardData = (uid) => {
       }
     })
     .catch((error) => {
-      console.error(error);
+      console.log(error);
     });
 };
 
-export const updateCardData = (uid, data) => {
-  const db = getDatabase(app);
-
-  const postKey = data.key || push(child(ref(db), 'posts')).key;
+export const updateCardData = async (uid, data) => {
+  const postKey = data.key || push(child(dbRef, 'posts')).key;
   data['key'] = postKey;
 
   const updates = {};
   updates[`users/${uid}/posts/${postKey}`] = data;
 
-  return update(ref(db), updates)
+  return update(dbRef, updates)
     .then(() => {
       return [data, postKey];
     })
@@ -46,6 +49,5 @@ export const updateCardData = (uid, data) => {
 };
 
 export const deleteCardData = (uid, key) => {
-  const db = getDatabase(app);
   remove(ref(db, `users/${uid}/posts/${key}`));
 };

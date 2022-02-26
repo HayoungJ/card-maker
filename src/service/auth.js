@@ -5,32 +5,27 @@ import {
   onAuthStateChanged,
   signOut,
 } from 'firebase/auth';
-import { getDatabase, ref, set } from 'firebase/database';
+import { setUserData } from './database';
 import app from './firebase';
 
-export const register = (email, password, handleSuccess, handleError) => {
-  const auth = getAuth(app);
+const auth = getAuth(app);
 
+// create user registered with email and password
+// add user data in database
+export const register = (email, password, handleSuccess, handleError) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
 
-      const db = getDatabase(app);
-      set(ref(db, 'users/' + user.uid), {
-        email: user.email,
-        uid: user.uid,
-      });
-
-      handleSuccess();
+      setUserData(user);
+      handleSuccess(user);
     })
     .catch((error) => {
-      handleError(error.code);
+      handleError && handleError(error.code);
     });
 };
 
 export const login = async (email, password, handleSuccess, handleError) => {
-  const auth = getAuth(app);
-
   await signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
@@ -38,25 +33,21 @@ export const login = async (email, password, handleSuccess, handleError) => {
       handleSuccess(user);
     })
     .catch((error) => {
-      handleError(error.code);
+      handleError && handleError(error.code);
     });
 };
 
 export const logout = (handleSuccess, handleError) => {
-  const auth = getAuth(app);
-
   signOut(auth)
     .then(() => {
       handleSuccess();
     })
     .catch((error) => {
-      handleError(error);
+      handleError && handleError(error);
     });
 };
 
 export const getUser = (handleSuccess, handleFail = () => {}) => {
-  const auth = getAuth(app);
-
   onAuthStateChanged(auth, (user) => {
     if (user) {
       handleSuccess(user);
