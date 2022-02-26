@@ -34,14 +34,12 @@ const CardDashboard = (props) => {
     fetchData();
   }, [uid, setCards]);
 
-  const handleInput = async (event, key) => {
-    const type = event.target.id;
-    const value = event.target.value;
-
+  const handleInput = async (type, value, key) => {
     const updateCard = { ...cards[key] };
-    updateCard[type] = value;
+    if (value) updateCard[type] = value;
+    console.log(updateCard);
 
-    const data = await updateCardData(uid, updateCard);
+    const [data] = await updateCardData(uid, updateCard);
     const newCards = { ...cards };
     newCards[key] = data;
     setCards(newCards);
@@ -68,16 +66,6 @@ const CardDashboard = (props) => {
     deleteCardData(uid, key);
     const newCards = { ...cards };
     delete newCards[key];
-    setCards(newCards);
-  };
-
-  const updateImage = async (url, key) => {
-    const updateCard = { ...cards[key] };
-    if (url) updateCard['profile'] = url;
-
-    const data = await updateCardData(uid, updateCard);
-    const newCards = { ...cards };
-    newCards[key] = data;
     setCards(newCards);
   };
 
@@ -117,7 +105,6 @@ const CardDashboard = (props) => {
                 key={el.key}
                 card={el}
                 handleInput={handleInput}
-                updateImage={updateImage}
                 handleDelete={deleteCard}
               />
             ))}
