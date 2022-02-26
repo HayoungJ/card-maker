@@ -49,6 +49,7 @@
   border-radius: 4px;
   outline: none;
   margin-top: -5px;
+  cursor: pointer;
 }
 
 .input-wrap {
