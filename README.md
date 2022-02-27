@@ -8,7 +8,7 @@
 2. local storage를 이용해 여러 개의 창에서 데이터 sync 유지하기
 
 ## 프로젝트 배포 링크
-https://business-card-maker-ec599.web.app/dashboard
+https://business-card-maker-ec599.web.app
 
 ## 프로젝트 기본 기능
 
