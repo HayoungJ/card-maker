@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
-import { getUser, googleLogin, login } from 'service/auth';
+import { getUser, githubLogin, googleLogin, login } from 'service/auth';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -61,6 +61,7 @@ const Login = () => {
         googleLogin(handleLoginSuccess, handleLoginError);
         break;
       case 'github':
+        githubLogin(handleLoginSuccess, handleLoginError);
         break;
       default:
         console.log('not valide sns login');
@@ -113,7 +114,14 @@ const Login = () => {
               >
                 Google
               </button>
-              <button className={styles['sns-button']}>Github</button>
+              <button
+                className={styles['sns-button']}
+                onClick={() => {
+                  handleSnsLogin('github');
+                }}
+              >
+                Github
+              </button>
             </div>
           </div>
         </section>
