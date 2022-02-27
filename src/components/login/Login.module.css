@@ -99,7 +99,6 @@
   font-weight: bold;
   font-size: 16px;
   text-transform: uppercase;
-  cursor: pointer;
 }
 
 .login-button:hover {
@@ -109,13 +108,10 @@
 .register-button {
   margin-bottom: 15px;
   background-color: transparent;
-  border: none;
-  outline: none;
   color: makerGreen;
   font-weight: bold;
   font-size: 12px;
   letter-spacing: 0.3px;
-  cursor: pointer;
 }
 
 .register-button:hover {
@@ -139,9 +135,7 @@
   width: 100px;
   height: 30px;
   background-color: makerLightGrey;
-  border: none;
   border-radius: 4px;
-  cursor: pointer;
 }
 
 .sns-button:last-child {

@@ -92,9 +92,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  border: none;
   border-radius: 50%;
-  outline: none;
   padding: 0;
   margin: 0;
   font-size: 16px;
@@ -103,5 +101,4 @@
   align-items: center;
   background-color: transparent;
   color: makerWhite;
-  cursor: pointer;
 }

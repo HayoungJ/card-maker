@@ -99,7 +99,6 @@
   font-weight: bold;
   font-size: 16px;
   text-transform: uppercase;
-  cursor: pointer;
 }
 
 .register-button:hover {
@@ -109,13 +108,10 @@
 .login-button {
   margin-bottom: 10px;
   background-color: transparent;
-  border: none;
-  outline: none;
   color: makerGreen;
   font-weight: bold;
   font-size: 12px;
   letter-spacing: 0.3px;
-  cursor: pointer;
 }
 
 .login-button:hover {
