@@ -6,19 +6,18 @@ import {
   ref,
   remove,
   update,
-  set,
 } from 'firebase/database';
 import app from './firebase';
 
 const db = getDatabase(app);
 const dbRef = ref(db);
 
-export const setUserData = (user) => {
-  set(ref(db, 'users/' + user.uid), {
-    email: user.email,
-    uid: user.uid,
-  });
-};
+// export const setUserData = (user) => {
+//   set(ref(db, 'users/' + user.uid), {
+//     email: user.email,
+//     uid: user.uid,
+//   });
+// };
 
 export const getCardData = async (uid) => {
   return get(child(dbRef, `users/${uid}/posts`))
